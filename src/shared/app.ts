@@ -21,12 +21,12 @@ app.get("/book", (req: Request, res: Response) => {
   res.render("books");
 });
 
-//cookies
-app.get("/set-cookie", (req: Request, res: Response) => {
-  res.cookie("newUser", false);
-  res.cookie("isEmployed", true, { maxAge: 8400000, httpOnly: true });
-  res.send("you got cookiesnp");
-});
+// //cookies
+// app.get("/set-cookie", (req: Request, res: Response) => {
+//   res.cookie("newUser", false);
+//   res.cookie("isEmployed", true, { maxAge: 8400000, httpOnly: true });
+//   res.send("you got cookiesnp");
+// });
 
 app.get("/read-cookie", (req: Request, res: Response) => {
   const cookies = req.cookies;
