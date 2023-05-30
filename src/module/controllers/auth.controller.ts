@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/entity/database.entity";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
+import { IUser } from "../models/entity/database.entity";
+import login from "../models/entity/database.entity";
 
 //handle errors
 const handleErrors = (err: any) => {
@@ -55,8 +57,13 @@ export const signup_post = async (req: Request, res: Response) => {
 };
 
 export const login_post = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
   try {
-    res.send("login");
-  } catch (error) {}
+    const { email, password }: IUser = req.body;
+    const user = await new login({ email, password });
+    res.status(200).json({ user: user._id });
+    console.log(user);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
+  }
 };

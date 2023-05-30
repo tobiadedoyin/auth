@@ -1,8 +1,13 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 import isEmail from "validator/lib/isEmail";
 import bcrypt from "bcryptjs";
 
-const userSchema = new Schema({
+export interface IUser extends Document {
+  email: string;
+  password: string;
+}
+
+const userSchema: Schema<IUser> = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Please enter an email"],
@@ -17,19 +22,32 @@ const userSchema = new Schema({
   },
 });
 
-//fire a function after document has been saved
-// userSchema.post("save", (doc, next) => {
-//   console.log("new user created and saved", doc);
-//   next();
-// });
-
 //fire a function before saving to the database
-userSchema.pre("save", async function (next) {
+userSchema.pre<IUser>("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-const User = mongoose.model("user", userSchema);
+userSchema.statics.login = async function ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<IUser> {
+  const user = await this.findOne({ email });
+  if (user) {
+    const auth = await bcrypt.compare(password, user.password);
+
+    if (auth) {
+      return user;
+    }
+    throw Error("incorrect password");
+  }
+  throw Error("email not found");
+};
+
+const User: Model<IUser> = mongoose.model("User", userSchema);
 
 export default User;
