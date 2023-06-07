@@ -46,8 +46,8 @@ const signup_post = async (req, res) => {
         const user = await database_entity_1.default.create({ email, password });
         const token = createToken(user._id);
         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-        user["token"] = token;
-        res.status(201).json({ user });
+        //user["token"] = token;
+        res.status(201).json({ user: user._id });
     }
     catch (err) {
         const error = handleErrors(err);
@@ -58,13 +58,13 @@ exports.signup_post = signup_post;
 const login_post = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await new database_entity_2.default({ email, password });
+        const user = new database_entity_2.default({ email, password });
         res.status(200).json({ user: user._id });
         console.log(user);
     }
-    catch (error) {
+    catch (err) {
+        const error = handleErrors(err);
         res.status(400).json(error);
-        console.log(error);
     }
 };
 exports.login_post = login_post;

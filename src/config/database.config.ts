@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const uri = process.env.MONGODB_URL;
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://bemfot:Oladele@cluster0.hjhetys.mongodb.net/node-auth"
-    );
+    await mongoose.connect(uri);
     console.log("database connected");
   } catch (error) {
     console.log("database connection error:", error);
